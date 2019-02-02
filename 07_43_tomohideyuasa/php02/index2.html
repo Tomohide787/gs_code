@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Map&amp;PHP</title>
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+ <br>
+ <h1>Gs 芸能人を探せアプリに、PHP参戦編</h1><br>
+<h4>
+真ん中の画面にあなたの現在位置、左右には「芸能人がいるかもしれない」場所の候補を表示しています（誰なのかはわかりません。）<br>
+探すことに決めたり、芸能人を発見できたら、ボタンを押してチャット上にメッセージを残しましょう。発見できた時は顔写真も自動でアップされます（JAVA）<br>
+またあなたの名前や位置情報を逐次記録しておくことができます。また記録一覧表を見ることができます(PHPで)</h4>
+<br>
+
+
+    <div class="wrapper0">
+
+        <div class="main-left">
+            <div class="box1">
+            </div>
+            <br>
+            <div class="box2">[芸能人１]の候補場所を表示</div>
+                        <br>
+            <div class="display" id="myMap02"></div>
+            <div class="display5" id="output1"></div>
+
+            <div class="display2">
+                <div class="news-list">        
+                    <div class="box5">
+                        <button id="btnA" class="form-control1">この芸能人を探すことに決定</button><br><br>
+                        <button id="btnS1" class="form-control2">芸能人を発見！！(^O^)</button><br><br>
+                        <button id="btnS11" class="form-control2">芸能人を見つけられず！(> <)</button><br><br>
+                    </div>   
+                </div>
+            </div>
+        </div>
+
+
+        <div class="main2">
+            <div class="box1">
+                <!-- <p class="text-center" id="view7">---</p> -->
+            </div>
+            <br>
+            <div class="box2">あなたの今の場所</div>
+                        <br>
+            <div class="display" id="myMap01"></div>
+            <div class="display3">
+            <!-- <p>自分の位置：緯度は：</p><p id="view1">---</p><p> 経度は：</p><p id="view2">---</p> -->
+                <button id="btnD" class="form-control1">違う芸能人を探す（候補場所を変更）</button>   
+                <br><br>
+                <p>海外にいる芸能人を探す場合はこちらで切り替えます</p>
+                <button id="btnE" class="form-control1">海外にいる芸能人を探す！</button>   
+                <br>
+                <br>
+               
+
+
+
+
+            <form method="post" action="http://localhost/php02/07_43_tomohideyuasa/php02/insert2.php">
+                <div class="jumbotron">
+                 <fieldset>
+                  <h3>保存したい情報を入力するエリア（PHP）</h3><br>
+                   <label>あなたの名前：<input type="text" name="Book_name"></label><br>
+                   <label>気になるURL：<input type="text" name="Book_URL"></label><br>
+                    <label>あなたの緯度(自動取得)：<input id="TOMO" value="" name="Lat"></label><br>
+                    <label>あなたの経度(自動取得)：<input id="HIDE" value="" name="Lon"></label><br>
+                   <label>あなたがいる場所についてのコメント<br><textArea name="Comment" rows="4" cols="40"></textArea></label><br>
+                   <button class="form-control3" type="submit">送 信</button>   
+                    <!-- <input type="submit" value="送信"> -->
+                  </fieldset>
+                  <br>
+                  <input class="form-control3"  type="button" onClick="location.href='http://localhost/php02/07_43_tomohideyuasa/php02/select2.php'" value="今までの結果を一覧表示する">
+                  <!-- <button class="form-control3" ><a href="http://localhost/php02/php02/select2.php">アンケート調査に結果を見る</a></button>   -->
+                </div>
+              </form>
+
+
+
+
+            </div>
+        </div>
+
+        <div class="main-right">
+            <div class="box1">
+            </div>
+            <br>
+            <div class="box2">[芸能人２]の候補場所を表示</div>
+                        <br>
+            <div class="display" id="myMap03"></div>
+            <div class="display5" id="output2"></div>
+
+            <div class="display2">
+                <div class="news-list">        
+                    <div class="box5">
+                        <button id="btnB" class="form-control1">この芸能人を探すことに決定</button><br><br>
+                        <button id="btnS2" class="form-control2">芸能人を発見！！(^O^)</button><br><br>
+                        <button id="btnS21" class="form-control2">芸能人を見つけられず！(> <)</button><br><br>
+                    </div>   
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+     <br>
+     <br>
+     <p>Copyrights 2019 Tomohide YUASA All RIghts Reserved.</p>
+      <br>
+     <br>
+ </div>
+    
+
+
+<!-- MapArea -->
+<!-- 現在位置情報を取得したら、ここの箱に入れる -->
+<!-- <div id="view"></div>  -->
+<!-- <div id="myMap01" style="width:800px; height:700px;"></div>
+<div id="myMap02" style="width:800px; height:700px;"></div>
+<div id="myMap03" style="width:800px; height:700px;"></div> -->
+<!-- /MapArea -->
+
+<!-- jQuery&GoogleMapsAPI -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- /jQuery&GoogleMapsAPI -->
+
+<!-- <script type="text/javascript" src="//cdn.webrtc.ecl.ntt.com/skyway-1.1.18-b.js"></script> -->
+
+
+
+<!-- [ Pushpin Object ] https://msdn.microsoft.com/en-us/library/mt712673.aspx -->
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=ArwFx8x1TcZH1WaSrHTQYhgTr55EIhPuBL57UBtKRSO0ZNvoWwQR6icNl0Fz9Oq_' async defer></script>
+<!-- 山崎先生の作ったjsを使う -->
+<script src="bmap.js"></script>
+
+<!-- javascript -->
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyB8oLNw9cR6VTHLRqcxY7NWYUB7TH5ddXo",
+    authDomain: "maps-884bf.firebaseapp.com",
+    databaseURL: "https://maps-884bf.firebaseio.com",
+    projectId: "maps-884bf",
+    storageBucket: "maps-884bf.appspot.com",
+    messagingSenderId: "233959714229"
+  };
+  firebase.initializeApp(config);
+
+
+var now = new Date();
+var time = 
+// now.getFullYear()+"年"+
+// 	( "0"+( now.getMonth()+1 ) ).slice(-2)+"月"+
+// 	( "0"+now.getDate() ).slice(-2)+"日"+
+    ( now.getHours() )+"時"+
+    ( now.getMinutes() )+"分";
+
+var yyyymmdd = 
+    now.getFullYear()+"年"+
+	( "0"+( now.getMonth()+1 ) ).slice(-2)+"月"+
+	( "0"+now.getDate() ).slice(-2)+"日";
+    // ( now.getHours() )+"時"+
+    // ( now.getMinutes() )+"分";
+
+
+
+$('#resultAA').html(yyyymmdd);
+$('#resultAAA').html(time);
+// $('#resultAAAA').html(p);
+
+$("#btnD").on("click", function(){
+    location.reload();
+});
+
+const randomNumber1 = Math.random()*0.4;
+const randomNumber2 = Math.random()*0.4;
+const randomNumber3 = Math.random()*0.4;
+const randomNumber4 = Math.random()*0.4;
+const randomNumber5 = Math.random()*0.4;
+const randomNumber6 = Math.random()*0.4;
+
+// alert(randomNumber1);
+// alert(randomNumber2);
+// alert(randomNumber3);
+// alert(randomNumber4);
+
+
+var newPostRef = firebase.database().ref();
+
+
+
+//1．位置情報の取得に成功した時の処理
+let map; 
+function mapsInit(position) {
+    //lat=緯度、lon=経度 を取得    
+    const lat01=position.coords.latitude; // 横線　プラス：上に、マイナス：下に
+    const lon01=position.coords.longitude; // 縦線　マイナス：左に、プラス：右に
+
+document.getElementById('TOMO').value=lat01;  //inputの中に引き渡すため
+document.getElementById('HIDE').value=lon01; //inputの中に引き渡すため
+
+
+    const lat02=lat01+randomNumber1;
+    const lon02=lon01-randomNumber2;
+
+
+
+    
+    const lat021=lat02+randomNumber1*0.2;
+    const lon021=lon02-randomNumber2*0.2;
+    const lat022=lat02+randomNumber3*0.2;
+    const lon022=lon02-randomNumber4*0.2;
+
+    const lat02g=lat01+randomNumber1*100;
+    const lon02g=lon01-randomNumber2*250;
+    const lat021g=lat01+randomNumber3*100;
+    const lon021g=lon01-randomNumber4*250;
+    const lat022g=lat01+randomNumber5*100;
+    const lon022g=lon01-randomNumber6*250;
+
+
+
+    const lat03=lat01+randomNumber3;
+    const lon03=lon01-randomNumber4;
+
+    const lat031=lat03+randomNumber4*0.2;
+    const lon031=lon03-randomNumber3*0.2;
+    const lat032=lat03+randomNumber2*0.2;
+    const lon032=lon03-randomNumber1*0.2;
+
+    const lat03g=lat01+randomNumber6*100;
+    const lon03g=lon01-randomNumber5*250;
+    const lat031g=lat03+randomNumber4*100;
+    const lon031g=lon03-randomNumber3*250;
+    const lat032g=lat03+randomNumber2*100;
+    const lon032g=lon03-randomNumber1*250;
+
+    const list1 = ["https://iwiz-cmspf.c.yimg.jp/im_siggZsAgQGTIePvEkTJe3cPhUA---x450/c/cmspf/91/21/64/13/ab0a462ef251b7ad893fce03337c810f.jpg",
+    "https://d2oe4hwshyef6j.cloudfront.net/production/uploads/image/post_body_picture/image/213352/picture_pc_41fce0c4593190b47e178656a9f9bc31dd1a9024",
+    "https://profile.yoshimoto.co.jp/assets/data/profile/213/503e5b045afaad2757b3c6399690ff804324ed95.jpg",
+    "https://stat.ameba.jp/user_images/20170221/16/koitomo1213/7d/3f/j/o0689043513873882490.jpg?caw=800",
+    "https://i0.wp.com/livedoor.blogimg.jp/rbkyn844/imgs/d/8/d8fe4bd9.png?resize=600%2C338",
+    "https://grapee.jp/wp-content/uploads/47766_main.jpg",
+    "https://img.cinematoday.jp/a/N0097203/_size_640x/_v_1513933769/main.jpg",
+    "https://i1.wp.com/future-free.com/wp-content/uploads/2017/07/SS-2017-07-28-16.16.22.jpg?w=532&ssl=1",
+    "https://japanesestation.com/wp-content/uploads/2013/03/Japanese-CM-Actress-01-Ayame-Gouriki.jpg",
+    "https://img.cinematoday.jp/a/A0005561/_size_640x/A0005561-00.jpg",
+    "https://www.cinra.net/uploads/img/news/2018/20180619-aube_full.jpg",
+    "https://grapee.jp/wp-content/uploads/gakki_main2.jpg",
+    "http://jprime.ismcdn.jp/mwimgs/2/6/-/img_263462766d9a8ab593f74ee1ed222e1a143698.jpg",
+    "http://mato-show.com/wp-content/uploads/2018/07/松潤１-768x573.jpg",
+    "https://assets.media-platform.com/bi/dist/images/2018/02/07/elonmusk-w1280.jpg",
+    "https://s3-ap-northeast-1.amazonaws.com/cdn.ranking-best.net/production/imgs/images/000/005/175/original.jpg?1528368166",
+    "http://iropel0103.com/wp-content/uploads/2017/08/aragakiyui.jpg",
+    "https://trendskywalker.c.blog.so-net.ne.jp/_images/blog/_6f4/trendskywalker/lycee-blanc16.JPG?c=a3",
+    "https://img.cinematoday.jp/a/N0098793/_size_640x/_v_1519801302/main.jpg",
+    "https://contents.oricon.co.jp/special/img/51000/51055/detail/img660/1524837143348.jpg",
+    "https://news.walkerplus.com/article/139611/782985_615.jpg",
+    "https://biz-journal.jp/images/post_20838_20171004.JPG",
+    "https://grapee.jp/wp-content/uploads/27063_main.jpg",
+    "https://assets.media-platform.com/lifehacker/dist/images/2015/09/150909fuminners_horiemon-w960.jpg"
+    ];
+
+    const randomNumber7 = Math.ceil(Math.random()*24);
+    const randomNumber8 = Math.ceil(Math.random()*24);
+    var photo =0;
+
+    str1 = list1[randomNumber7-1];
+    str2 = list1[randomNumber8-1];
+
+        $('#view3').html('<img src="'+str1+'" width=400px height=240>');
+        $('#view4').html('<img src="'+str2+'" width=400px height=240>');
+
+    // r=6378.137;
+    // y1=lat01;
+    // y1=lat02;
+    // x1=lon01;
+    // x2=lon02;
+    // Δx=x2-x1;
+
+    // const d1= r*acos(sin(y1)*sin(y2)+cos(y1)*cos(y2)*cos(Δx));
+
+    a=1;
+    b=2;
+    c=3;
+    d=4;
+    e=5;
+    f=6;
+    g=7;
+    h=8;
+
+    $('#view1').html(lat01);
+    $('#view2').html(lon01);
+
+    
+    // $('#view3').html(lat02);
+    // $('#view4').html(lon02);
+    // $('#view5').html(lat03);
+    // $('#view6').html(lon03);
+    // $('#view7').html(d1);
+
+    $("#btnA").on("click", function(){
+        newPostRef.push({
+                ido: lat01,
+                keido: lon01,
+                date2: time,
+                judge: a,
+        })
+
+            alert("この芸能人を探すことをメッセージに残します");
+    });
+
+    $("#btnB").on("click", function(){
+        newPostRef.push({
+                ido: lat01,
+                keido: lon01,
+                date2: time,
+                judge: b,
+         })
+
+        alert("この芸能人を探すことをメッセージに残します");
+    });
+
+    $("#btnS1").on("click", function(){
+        newPostRef.push({
+                ido: lat01,
+                keido: lon01,
+                date2: time,
+                judge: c,
+                photo: str1,
+         })
+
+        alert("おめでとうございます！芸能人発見のメッセージを残します");
+    });
+
+    $("#btnS2").on("click", function(){
+        newPostRef.push({
+                ido: lat01,
+                keido: lon01,
+                date2: time,
+                judge: d,
+                photo: str2,
+         })
+
+        alert("おめでとうございます！芸能人発見のメッセージを残します");
+    });
+
+    $("#btnS11").on("click", function(){
+    newPostRef.push({
+            ido: lat01,
+            keido: lon01,
+            date2: time,
+            judge: e,
+        })
+    });
+
+    $("#btnS21").on("click", function(){
+    newPostRef.push({
+            ido: lat01,
+            keido: lon01,
+            date2: time,
+            judge: f,
+        })
+    });
+
+    $("#btnD").on("click", function(){
+    newPostRef.push({
+            date2: time,
+            judge: g,
+        })
+    });
+
+    $("#btnE").on("click", function(){
+    newPostRef.push({
+            ido: lat02g,
+            keido: lon02g,
+            date2: time,
+            judge: h,
+    });
+
+        map = mapStart("#myMap01", lat01, lon01, "load", 1); //Initialization processing
+        mapPushpin(map, lat01, lon01, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat01, lon01, "Tomohide YUASA", "私はここにいます！"); //infobox
+
+        map = mapStart("#myMap02", lat02g, lon02g, "load", 1); //Initialization processing
+        mapPushpin(map, lat02g, lon02g, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat02g, lon02g, "候補A", "海外"); //infobox
+        mapPushpin(map, lat021g, lon021g, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat021g, lon021g, "候補B", "海外"); //infobox
+        mapPushpin(map, lat022g, lon022g, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat022g, lon022g, "候補C", "海外"); //infobox
+        // mapPushpin(map, lat01, lon01, "#ff0000", true,true,true,true); //pushpin
+        // mapInfobox(map, lat01, lon01, "Tomohide YUASA", "私はここにいます！"); //infobox
+
+        map = mapStart("#myMap03", lat03g, lon03g, "load", 1); //Initialization processing
+        mapPushpin(map, lat03g, lon03g, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat03g, lon03g, "候補A", "海外"); //infobox
+        mapPushpin(map, lat031g, lon031g, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat031g, lon031g, "候補B", "海外"); //infobox
+        mapPushpin(map, lat032g, lon032g, "#ff0000", true,true,true,true); //pushpin
+        mapInfobox(map, lat032g, lon032g, "候補C", "海外"); //infobox  
+        // mapPushpin(map, lat01, lon01, "#ff0000", true,true,true,true); //pushpin
+        // mapInfobox(map, lat01, lon01, "Tomohide YUASA", "私はここにいます！"); //infobox
+
+    });
+
+
+
+    map = mapStart("#myMap01", lat01, lon01, "grayscale", 8); //Initialization processing
+    mapPushpin(map, lat01, lon01, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat01, lon01, "Tomohide YUASA", "私はここにいます！"); //infobox
+
+
+    map = mapStart("#myMap02", lat01, lon01, "load", 8); //Initialization processing
+    mapPushpin(map, lat02, lon02, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat02, lon02, "候補A", ""); //infobox
+    mapPushpin(map, lat021, lon021, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat021, lon021, "候補B", ""); //infobox
+    mapPushpin(map, lat022, lon022, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat022, lon022, "候補C", ""); //infobox
+    // mapPushpin(map, lat01, lon01, "#ff0000", true,true,true,true); //pushpin
+    // mapInfobox(map, lat01, lon01, "Tomohide YUASA", "私はここにいます！"); //infobox
+
+    map = mapStart("#myMap03", lat01, lon01, "load", 8); //Initialization processing
+    mapPushpin(map, lat03, lon03, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat03, lon03, "候補A", ""); //infobox
+    mapPushpin(map, lat031, lon031, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat031, lon031, "候補B", ""); //infobox
+    mapPushpin(map, lat032, lon032, "#ff0000", true,true,true,true); //pushpin
+    mapInfobox(map, lat032, lon032, "候補C", ""); //infobox
+    // mapPushpin(map, lat01, lon01, "#ff0000", true,true,true,true); //pushpin
+    // mapInfobox(map, lat01, lon01, "Tomohide YUASA", "私はここにいます！"); //infobox
+
+  }; 
+
+
+
+//2． 位置情報の取得に失敗した場合の処理
+function mapsError(error) {
+  let e = "";
+  if (error.code == 1) { //1＝位置情報取得が許可されてない（ブラウザの設定）
+    e = "位置情報が許可されてません";
+  }
+  if (error.code == 2) { //2＝現在地を特定できない
+    e = "現在位置を特定できません";
+  }
+  if (error.code == 3) { //3＝位置情報を取得する前にタイムアウトになった場合
+    e = "位置情報を取得する前にタイムアウトになりました";
+  }
+  alert("エラー：" + e);
+};
+
+//3.位置情報取得オプション
+var set ={
+  enableHighAccuracy: true, //より高精度な位置を求める
+  maximumAge: 20000,        //最後の現在地情報取得が20秒以内であればその情報を再利用する設定
+  timeout: 10000            //10秒以内に現在地情報を取得できなければ、処理を終了 この時間を待って取得できなければ”タイムアウトのアラートを出す”
+};
+
+
+
+
+
+// MSGデータ受信
+        newPostRef.on("child_added", function(data){
+        let v = data.val();
+        let k = data.key; //あのデータを消したい！みたいな時に使う。今日は使っていない。
+        console.log(v);    
+
+        // let nakami =  '<dl id="'+k+'"><dl> <div class="bar">緯度は ' + v.ido + '<br>経度は '+ v.keido + '<br>時間は ' + v.date2 + '</div>' ;
+        let nakami1 =  '<dl id="'+k+'"><dt> <div class="bar">私（湯淺）の今の位置は<br>緯度は ' + v.ido + '<br>経度は '+ v.keido + 'です。<br>今から[芸能人１]を探しに行きます。</div> </dd> <dd><div class="bar2">' + v.date2 +'</div></dd></dl>';
+        let nakami2 =  '<dl id="'+k+'"><dt> <div class="bar">私（湯淺）の今の位置は<br>緯度は ' + v.ido + '<br>経度は '+ v.keido + 'です。<br>今から[芸能人２]を探しに行きます。</div> </dd> <dd><div class="bar2">' + v.date2 +'</div></dd></dl>';
+        let nakami3 =  '<div class="barkekka">私（湯淺）は<br>[芸能人1]を見つけました！！！(^O^)</div><div class="bar2">' + v.date2 +'</div>';
+        let nakami4 =  '<div class="barkekka">私（湯淺）は<br>[芸能人2]を見つけました！！！(^O^)</div><div class="bar2">' + v.date2 +'</div>';
+        let nakami5 =  '<div class="barkekka">私（湯淺）は<br>[芸能人1]をみつけられませんでした(> <)</div><div class="bar2">' + v.date2 +'</div>';      
+        let nakami6 =  '<div class="barkekka">私（湯淺）は<br>[芸能人2]をみつけられませんでした(> <)</div><div class="bar2">' + v.date2 +'</div>';  
+        let nakami7 =  '<div class="bar">私（湯淺）は探す芸能人候補を変更しました。</div><div class="bar2">' + v.date2 +'</div>';  
+        let nakami8 =  '<div class="bar">私（湯淺）は「世界検索」に切り替えました。</div><div class="bar2">' + v.date2 +'</div>';  
+        
+        let ppp ='<img src="'+v.photo+'" width="300";>';
+
+        if(v.judge===1){
+        $("#output1").append(nakami1);
+        $("#output1").scrollTop( $("#output1")[0].scrollHeight );
+        }else if(v.judge==2){
+        $("#output2").append(nakami2);
+        $("#output2").scrollTop( $("#output2")[0].scrollHeight );
+        }else if(v.judge==3){
+        $("#output1").append(nakami3, ppp);
+        $("#output1").scrollTop( $("#output1")[0].scrollHeight );    
+        }else if(v.judge===4){
+        $("#output2").append(nakami4, ppp);
+        $("#output2").scrollTop( $("#output2")[0].scrollHeight );    
+        }else if(v.judge===5){
+        $("#output1").append(nakami5);
+        $("#output1").scrollTop( $("#output1")[0].scrollHeight );  
+        }else if(v.judge===6){
+        $("#output2").append(nakami6);
+        $("#output2").scrollTop( $("#output2")[0].scrollHeight );  
+        }else if(v.judge===7){
+        $("#output1").append(nakami7);
+        $("#output2").append(nakami7);
+        $("#output1").scrollTop( $("#output1")[0].scrollHeight );  
+        $("#output2").scrollTop( $("#output2")[0].scrollHeight );  
+        }else if(v.judge===8){
+        $("#output1").append(nakami8);
+        $("#output2").append(nakami8);
+        $("#output1").scrollTop( $("#output1")[0].scrollHeight );  
+        $("#output2").scrollTop( $("#output2")[0].scrollHeight );  
+        };
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Main:位置情報を取得する処理 //getCurrentPosition :or: watchPosition
+
+function GetMap(){
+navigator.geolocation.getCurrentPosition(mapsInit, mapsError, set);
+}
+
+
+// 中に３つのパラメータが必要
+// １つめ、成功関数（成功したら実行する関数）
+// ２つめ、失敗しなかった場合は、こちらの関数が実行される
+
+
+
+
+</script>
+</body>
+</html>
